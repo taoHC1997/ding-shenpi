@@ -1,3 +1,4 @@
+const fs = require("fs");
 var axios = require("axios");
 
 // 钉钉配置
@@ -36,6 +37,7 @@ async function main() {
   await is_ip_ok(TOKEN);
   let from_list = await get_from_list(TOKEN);
   let data = await count_froms(TOKEN, from_list);
+  await save_file(data);
   console.log(`统计完成，总数为 ${total}`);
 }
 
@@ -166,6 +168,22 @@ async function count_froms(TOKEN, from_list) {
     total += from_item.count;
   }
   return from_list;
+}
+
+// 保存为文件
+async function save_file(data) {
+  let date =
+    date_now.getFullYear() +
+    "-" +
+    (date_now.getMonth() + 1) +
+    "-" +
+    date_now.getDate();
+  await fs.writeFileSync(
+    `./output(${date}).txt`,
+    JSON.stringify(data),
+    { flag: "a+" },
+    (err) => {}
+  );
 }
 
 // 入口
